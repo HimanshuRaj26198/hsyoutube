@@ -32,10 +32,10 @@
     <link rel="icon" type="image/x-icon" href="{{url_for('static', filename='images/favicon.ico')}}" />
     <link rel="apple-touch-icon" href="{{url_for('static', filename='images/favicon.ico')}}" />
     <link href="{{url_for('static', filename='bootstrap/bootstrap.min.css')}}" rel="stylesheet"  crossorigin="anonymous" />
-    <script defer src="{{url_for('static', filename='bootstrap/bootstrap.bundle.min.js')}}" crossorigin="anonymous" ></script>
+    <script async src="{{url_for('static', filename='bootstrap/bootstrap.bundle.min.js')}}" crossorigin="anonymous" ></script>
     <link rel="stylesheet" href="{{url_for('static', filename='fontawsome/all.min.css')}}"  crossorigin="anonymous" referrerpolicy="no-referrer" />
      
-    <script >
+    <script async >
       function getResols() {
         document.getElementById("error_container").style.display = "none";
         document
