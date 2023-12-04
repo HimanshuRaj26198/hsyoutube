@@ -1,5 +1,4 @@
 from pytube import YouTube
-from moviepy.editor import *
 from flask import send_file, abort
 from io import BytesIO
 
@@ -67,19 +66,3 @@ def return_yt_by_itag(link, itag):
         return send_file(buffer, as_attachment=True, download_name=stream.default_filename, mimetype=stream.mime_type)
     except Exception as e:
         print("An error has occurred", e)
-    
-
-def VideoToMp3(link):
-    print("DOWNLOADING AUDIO")
-    buffer=BytesIO()
-    try:
-        yt = YouTube(link)
-        yt.streams.filter(only_audio=True).first()
-        stream=yt.streams.get_highest_resolution()
-        stream.stream_to_buffer(buffer)
-        buffer.seek(0)
-        return send_file(buffer, as_attachment=True, download_name=stream.default_filename, mimetype=stream.mime_type)
-    except Exception as e:
-        print(e)
-        return {"error" : e}
-
