@@ -61,13 +61,6 @@ def download_yt_vide_by_itag():
 		except Exception as e:
 			print(e)
 
-@app.route('/youtube_video_to_mp3.html', methods=['GET', 'POST'])
-def return_video_to_mp3():
-	if(request.method == "GET"):
-		return render_template('video_to_mp3.html')
-	elif(request.method == 'POST'):
-		video_url = request.form['video_url']
-		return VideoToMp3(video_url)
 
 @app.route('/policy.html', methods=['GET'])
 def return_policy():
