@@ -61,6 +61,10 @@ def download_yt_vide_by_itag():
 		except Exception as e:
 			print(e)
 
+@app.route('/reelsdownloader', methods=['GET'])
+def return_reelsdownloader():
+	return render_template('reelsdownloader.html')
+
 
 @app.route('/policy.html', methods=['GET'])
 def return_policy():
