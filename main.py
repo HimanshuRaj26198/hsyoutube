@@ -10,7 +10,7 @@ CORS(app)
 
 # The route() function of the Flask class is a decorator, 
 # which tells the application which URL should call 
-# the associated function.
+# the associated functio
 
 	
 @app.route('/robots.txt', methods=['GET'])
