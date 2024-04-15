@@ -1,938 +1,700 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-NN6BMJP990"></script>
-<script  >
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-NN6BMJP990');
-</script>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HSYouTube - Video Downloader</title>
-    <meta name="description" content="HSYouTube's Youtube Video Downloader Download Unlimited YouTube Videos. High Quality video download MP4, MP3, 3gp very easily and securely!" />
-    <meta name="keyword" content="Download YouTube Videos, MP4, MP3, 3GP, Download High quality video, Download Unlimited YouTube Video" />
-    <meta name="og:url" content="https://HSYouTube.com" />
-    <meta name="og:type" content="homepage" />
-    <meta name="og:title" content="HSYouTube - Youtube Video Donwloader" />
-    <meta name="og:description" content="Download videos from YouTube in multiple resolustions and quality. Download YouTube video for free in MP4, 4K, 3gp and many more qualities." />
-    <meta name="og:image" content="https://HSYouTube.com/static/images/preview.jpg" />
-    <meta name=”robots” content="index, nofollow">
-    <link rel="icon" type="image/x-icon" href="{{url_for('static', filename='images/favicon.ico')}}" />
-    <link rel="apple-touch-icon" href="{{url_for('static', filename='images/favicon.ico')}}" />
-    <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet"  crossorigin="anonymous" />
-    <script src="{{url_for('static', filename='bootstrap.bundle.min.js')}}" crossorigin="anonymous" ></script>
-    <link rel="stylesheet" href="{{url_for('static', filename='all.min.css')}}"  crossorigin="anonymous" referrerpolicy="no-referrer" />
-     
-    <script>
-      function getResols() {
-        document.getElementById("error_container").style.display = "none";
-        document
-          .getElementById("form_download_btn")
-          .setAttribute("disabled", "true");
-        if (document.getElementById("yt_url").value == "") {
-          document.getElementById("download_options").style.display = "none";
-          document.getElementById("error_container").style.display = "none";
-        } else {
-          document.getElementById("loader_container").style.display = "flex";
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NN6BMJP990"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-          fetch("/get_resolutions", {
-            headers: {
-              "Content-type": "application/json",
-            },
-            method: "POST",
-            body: JSON.stringify({
-              video_url: document.getElementById("yt_url").value,
-            }),
-          })
-            .then(function (response) {
-              response
-                .json()
-                .then(function (json) {
-                  let eachStream = [];
-                  let nStream = [];
-                  json.Resolutions.replace(/<Stream: /g, "")
-                    .replace(/\[/g, "")
-                    .replace(/>/g, "")
-                    .replace(/\]/, "")
-                    .replaceAll("'", "")
-                    .replaceAll('"', "")
-                    .split(",")
-                    .forEach((a, i) => {
-                      a = a.split(" ");
-                      if (i != 0) {
-                        a.shift();
-                      }
-                      eachStream.push(a);
-                    });
-                  eachStream.forEach((a) => {
-                    let obj = {};
-                    a.forEach((b, i) => {
-                      b = b.split("=");
-                      if (i == 0) {
-                        let key = b[0];
-                        let value = b[1];
-                        obj[key] = value;
-                      } else {
-                        let key = b[0];
-                        let value = b[1];
-                        obj[key] = value;
-                      }
-                    });
-                    nStream.push(obj);
-                  });
-                  if (!document.getElementById("resolutions_box")) {
-                    document.getElementById("loader_container").style.display =
-                      "none";
-                    document.getElementById("download_options").style.display =
-                      "block";
-                    document
-                      .getElementById("form_download_btn")
-                      .removeAttribute("disabled");
-                    renderJSON(nStream, json.title);
-                  } else {
-                    document.getElementById("resolutions_box").remove();
-                    document.getElementById("loader_container").style.display =
-                      "none";
-                    document.getElementById("download_options").style.display =
-                      "block";
-                    document
-                      .getElementById("form_download_btn")
-                      .removeAttribute("disabled");
-                    renderJSON(nStream, json.title);
-                  }
-                })
-                .catch(function (err) {
-                  document.getElementById("loader_container").style.display =
-                    "none";
-                  document.getElementById("error_container").style.display =
-                    "block";
-                });
-            })
-            .catch(function (error) {
-              document.getElementById("loader_container").style.display =
-                "none";
-              document.getElementById("error_container").style.display =
-                "block";
-            });
-        }
-      }
-
-      function renderJSON(arr, title) {
-        document.getElementById("loader_container").style.display = "none";
-        let currentTitle = title;
-        let container = document.createElement("div");
-        container.id = "resolutions_box";
-        container.classList.add("options_container");
-        arr.splice(0, 4).forEach((a) => {
-          let videoResoItem = document.createElement("div");
-          videoResoItem.classList.add("row");
-          videoResoItem.classList.add("video_reso_item");
-          let vidoeResItemCol1 = document.createElement("div");
-          vidoeResItemCol1.classList.add("col-md-10");
-          vidoeResItemCol1.classList.add("col-ms-12");
-          let resoRow = document.createElement("div");
-          resoRow.classList.add("row");
-          resoRow.classList.add("reso_row");
-          let resItem1 = document.createElement("div");
-          resItem1.classList.add("col-md-4");
-          resItem1.classList.add("res_item");
-          let displayTitle = document.createElement("p");
-          displayTitle.innerHTML = title.substring(0, 15);
-          let youTubeImg = document.createElement("img");
-          youTubeImg.classList.add("youtubeImg");
-          resItem1.appendChild(youTubeImg);
-          resItem1.appendChild(displayTitle);
-          youTubeImg.src = `{{url_for("static", filename="images/youtube.png")}}`;
-          let resItem2 = document.createElement("div");
-          resItem2.classList.add("col-md-4");
-          resItem2.classList.add("res_item");
-          let displayRes = document.createElement("p");
-          displayRes.innerHTML = a["res"];
-          resItem2.appendChild(displayRes);
-          let resItem3 = document.createElement("div");
-          resItem3.classList.add("col-md-4");
-          resItem3.classList.add("res_item");
-          let displayFormat = document.createElement("p");
-          displayFormat.innerHTML = a["mime_type"];
-          resItem3.appendChild(displayFormat);
-          resoRow.appendChild(resItem1);
-          resoRow.appendChild(resItem2);
-          resoRow.appendChild(resItem3);
-          vidoeResItemCol1.appendChild(resoRow);
-          videoResoItem.appendChild(vidoeResItemCol1);
-          let videoResItemCol2 = document.createElement("div");
-          videoResItemCol2.classList.add("col-md-2");
-          videoResItemCol2.classList.add("col-ms-12");
-          videoResItemCol2.classList.add("res_download_btn_container");
-          let downloadForm = document.createElement("form");
-          downloadForm.action = "/downloadbyitag";
-          downloadForm.method = "POST";
-          let resValueInput = document.createElement("input");
-          resValueInput.type = "hidden";
-          resValueInput.name = "url";
-          resValueInput.value = document.getElementById("yt_url").value;
-          let itagValueInput = document.createElement("input");
-          itagValueInput.name = "itag";
-          itagValueInput.type = "hidden";
-          itagValueInput.value = a["itag"];
-          itagValueInput.style.display = "none";
-          let downloadBtn = document.createElement("input");
-          downloadBtn.type = "submit";
-          downloadBtn.classList.add("btn");
-          downloadBtn.classList.add("btn-info");
-          downloadBtn.classList.add("res_download_btn");
-          downloadBtn.value = "Download";
-          downloadForm.appendChild(resValueInput);
-          downloadForm.appendChild(itagValueInput);
-          downloadForm.appendChild(downloadBtn);
-          videoResItemCol2.appendChild(downloadForm);
-          videoResoItem.appendChild(videoResItemCol2);
-          container.appendChild(videoResoItem);
-        });
-
-        document.getElementById("download_options").appendChild(container);
-      }
-
-      function downloadSelectedRes(url, itag) {
-   
-        let obj = JSON.stringify({ url: url, itag: itag });
-        fetch("/downloadbyitag", {
-          headers: {
-            "Content-type": "application/json",
-          },
-          method: "POST",
-          body: obj,
-        })
-          .then(function (response) {
-            document.getElementsByClassName("progress-bar")[0].style.width = "100%";
-          })
-          .catch(function (e) {
-            console.log(e);
-          });
-      }
-    </script>
-        <style>
-      * {
-        margin: 0;
-        padding: 0;
-      }
-      
-      main {
-        display: flex;
-        flex-direction: column;
-        gap: 9vh;
-        margin-bottom: 0 !important;
-      }
-      
-      .navbar {
-        background-color: #7752fe !important;
-      }
-      
-      .nav-item a {
-        color: #ffff !important;
-      }
-      
-      .navbar-brand {
-        font-weight: 700 !important;
-        color: white !important;
-      }
-      .navbar-brand img {
-        width: 40px;
-        height: auto;
-      }
-      
-      #top_banner {
-        width: 100%;
-        min-height: 70vh;
-        background-color: #190482;
-        display: flex;
-        gap: 20px;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0px 2px 55px 15px #190482;
-        padding: 8px;
-        /* padding-top: 8%; */
-      }
-      
-      .title_container {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-      }
-      
-      .title_container h1 {
-        text-align: center;
-      }
-      
-      .main_title {
-        color: white;
-      }
-      
-      .form_container {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-      }
-      
-      form {
-        width: 80%;
-        display: flex;
-        justify-content: center;
-        gap: 35px;
-      }
-      
-      form .row {
-        width: 100%;
-      }
-      
-      form .row .input_container {
-        margin-bottom: 10px;
-      }
-      
-      form .row .input_container .url_input {
-        border: none;
-        height: 35px;
-        border-radius: 4px;
-        width: 100%;
-      }
-      
-      form .row .button_container input {
-        width: 100%;
-      }
-      
-      .url_input::placeholder {
-        text-align: center;
-        color: #190482;
-      }
-      
-      .title_container h2 {
-        text-align: center;
-        color: #7752fe;
-      }
-      
-      #download_options {
-        margin-top: 20px;
-        display: none;
-      }
-      
-      #resolutions_box {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-      
-      .res_item {
-        display: flex;
-        justify-content: center;
-        text-align: center;
-        align-items: center !important;
-      }
-      
-      .res_item p {
-        margin-bottom: 0 !important;
-      }
-      
-      .video_reso_item {
-        background-color: white;
-        align-items: center;
-        font-weight: 500;
-        border-bottom: 0.2px solid gray;
-        padding: 5px;
-      }
-      
-      .reso_row {
-        display: flex;
-        align-items: center;
-      }
-      
-      .first_row {
-        display: flex;
-        justify-content: center;
-        text-align: center;
-        align-items: center !important;
-        background-color: white;
-        border-top-right-radius: 8px;
-        border-top-left-radius: 8px;
-        font-weight: bold;
-      }
-      
-      .res_download_btn {
-        font-size: 15px;
-      }
-      
-      .res_download_btn_container {
-        display: flex;
-        justify-content: center !important;
-      }
-      
-      .youtubeImg {
-        width: 25px;
-        height: auto;
-        margin-right: 5px;
-      }
-      
-      #loader_container {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-      }
-      
-      #loader_container p {
-        color: white;
-      }
-      
-      #error_container {
-        display: none;
-      }
-      #error_container p {
-        color: red;
-        font-size: 19px;
-        text-align: center;
-      }
-      
-      #ytFrame {
-        display: none;
-      }
-      
-      .icons {
-      }
-      p {
-        font-size: larger;
-        color: #36754e;
-        font-weight: 500;
-        /* margin: 0px 40px 0px 40px; */
-      }
-      
-      .os_icon {
-        width: 80px;
-        height: 80px;
-      }
-      
-      .section_second {
-        max-width: 100%;
-      }
-      
-      .section_second .center_col {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .center_col {
-        display: flex;
-        flex-direction: column;
-        gap: 7vh;
-      }
-      
-      .platform_descr {
-        display: flex;
-        justify-content: center;
-      }
-      
-      .platform_descr p {
-        text-align: center;
-      }
-      
-      .icon_container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-      }
-      
-      .icon_container h3 {
-        font-size: 38px;
-        color: #36754e;
-      }
-      
-      .icon_container .icons {
-        width: 100%;
-        justify-content: center !important;
-      }
-      
-      .icon_container .icons .icon_box {
-        display: flex;
-        justify-content: center !important;
-        gap: 25px;
-        margin: 20px 0px;
-      }
-      
-      .row {
-        margin-right: 0 !important;
-      }
-      
-      .feature_list_container {
-        display: flex;
-        width: 100%;
-        justify-content: left;
-      }
-      
-      .feature_list_container ol {
-        font-size: 22px;
-        text-align: justify;
-        color: #36754e;
-        font-weight: 450;
-      }
-      
-      .yt_video_guide {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .yt_video_guide h2{
-        color: #36754e;
-      }
-
-      .img_steps {
-        width: 100%;
-        justify-content: space-around !important;
-      }
-      
-      .img_steps div {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 30px 0;
-        gap: 5px;
-      }
-      
-      .img_steps div p {
-        color: gray;
-        text-align: left;
-        font-size: 11px;
-        width: 220px;
-      }
-      
-      .list_title {
-        font-weight: bold;
-      }
-      
-      .article_1 p {
-        color: white;
-      }
-      .article_1 {
-        background-color: #190482;
-        color: white;
-        margin-bottom: 0 !important;
-      }
-      
-      footer {
-        background-color: black;
-        min-height: 40vh;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 20px 0;
-        gap: 30px;
-      }
-      
-      footer .footer_links_container p {
-        color: white;
-      }
-      
-      footer .footer_links_container {
-        justify-content: space-around !important    ;
-      }
-      
-      .progress {
-        min-width: 300px;
-        display: none;
-      }
-      
-      
-      .download_msg{
-        background-color: rgb(77, 139, 77);
-        /* padding: 5px 1; */
-        padding-top: 10px;
-        font-size: 15px;
-        height: 11vh;
-        display: flex;
-        align-items: center;
-        text-align: center;
-        justify-content: center;
-        /* display: none; */
-      }
-      
-      .download_msg p{
-        width: 80%;
-        text-align: center;
-        color: white;
-        margin-bottom: none;
-      
-      }
-      
-      .close-ico-btn{
-        position: relative;
-        /* transform: translate(85px,-30px); */
-        float: right;
-        top: -10%;
-        cursor: pointer;
-      }
-      
-      #policy_top{
-        background-color: #190482;
-        height: 20vh;
-        color: white;
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-      }
-      
-      .policy_list ol{
-        font-size: 20px;
-      }
-      
-      .policy_list ol li{
-        font-weight: bold;
-        margin: 6px 0;
-      }
-      
-      .policy_list ul{
-        font-size: 18px;
-      }
-      
-      .policy_list ul li{
-        font-weight: normal;
-      }
-      
-      .policy_content{
-        margin-bottom: 10vh;
-        padding: 4vw;
-        text-align: left;
-      }
-
-    #top_ad_1{
-	    display: flex;
-	    justify-content: center;	    
+    gtag('config', 'G-NN6BMJP990');
+  </script>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HSYouTube - Video Downloader</title>
+  <meta name="description"
+    content="HSYouTube's Youtube Video Downloader Download Unlimited YouTube Videos. High Quality video download MP4, MP3, 3gp very easily and securely!" />
+  <meta name="keyword"
+    content="Download YouTube Videos, MP4, MP3, 3GP, Download High quality video, Download Unlimited YouTube Video" />
+  <meta name="og:url" content="https://HSYouTube.com" />
+  <meta name="og:type" content="homepage" />
+  <meta name="og:title" content="HSYouTube - Youtube Video Donwloader" />
+  <meta name="og:description"
+    content="Download videos from YouTube in multiple resolustions and quality. Download YouTube video for free in MP4, 4K, 3gp and many more qualities." />
+  <meta name="og:image" content="https://HSYouTube.com/static/images/preview.jpg" />
+  <meta name=”robots” content="index, nofollow">
+  <link rel="icon" type="image/x-icon" href="{{url_for('static', filename='images/favicon.ico')}}" />
+  <link rel="apple-touch-icon" href="{{url_for('static', filename='images/favicon.ico')}}" />
+  <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet" crossorigin="anonymous" />
+  <script src="{{url_for('static', filename='bootstrap.bundle.min.js')}}" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="{{url_for('static', filename='all.min.css')}}" crossorigin="anonymous"
+    referrerpolicy="no-referrer" />
+  <script>
+    function getResols() { document.getElementById("error_container").style.display = "none", document.getElementById("form_download_btn").setAttribute("disabled", "true"), "" == document.getElementById("yt_url").value ? (document.getElementById("download_options").style.display = "none", document.getElementById("error_container").style.display = "none") : (document.getElementById("loader_container").style.display = "flex", fetch("/get_resolutions", { headers: { "Content-type": "application/json" }, method: "POST", body: JSON.stringify({ video_url: document.getElementById("yt_url").value }) }).then(function (e) { e.json().then(function (e) { let t = [], l = []; e.Resolutions.replace(/<Stream: /g, "").replace(/\[/g, "").replace(/>/g, "").replace(/\]/, "").replaceAll("'", "").replaceAll('"', "").split(",").forEach((e, l) => { e = e.split(" "), 0 != l && e.shift(), t.push(e) }), t.forEach(e => { let t = {}; e.forEach((e, l) => { if (e = e.split("="), 0 == l) { let n = e[0], d = e[1]; t[n] = d } else { let a = e[0], s = e[1]; t[a] = s } }), l.push(t) }), document.getElementById("resolutions_box") ? (document.getElementById("resolutions_box").remove(), document.getElementById("loader_container").style.display = "none", document.getElementById("download_options").style.display = "block", document.getElementById("form_download_btn").removeAttribute("disabled"), renderJSON(l, e.title)) : (document.getElementById("loader_container").style.display = "none", document.getElementById("download_options").style.display = "block", document.getElementById("form_download_btn").removeAttribute("disabled"), renderJSON(l, e.title)) }).catch(function (e) { document.getElementById("loader_container").style.display = "none", document.getElementById("error_container").style.display = "block" }) }).catch(function (e) { document.getElementById("loader_container").style.display = "none", document.getElementById("error_container").style.display = "block" })) } function renderJSON(e, t) { document.getElementById("loader_container").style.display = "none"; let l = document.createElement("div"); l.id = "resolutions_box", l.classList.add("options_container"), e.splice(0, 4).forEach(e => { let n = document.createElement("div"); n.classList.add("row"), n.classList.add("video_reso_item"); let d = document.createElement("div"); d.classList.add("col-md-10"), d.classList.add("col-ms-12"); let a = document.createElement("div"); a.classList.add("row"), a.classList.add("reso_row"); let s = document.createElement("div"); s.classList.add("col-md-4"), s.classList.add("res_item"); let i = document.createElement("p"); i.innerHTML = t.substring(0, 15); let o = document.createElement("img"); o.classList.add("youtubeImg"), s.appendChild(o), s.appendChild(i), o.src = "/static/images/youtube.png"; let r = document.createElement("div"); r.classList.add("col-md-4"), r.classList.add("res_item"); let c = document.createElement("p"); c.innerHTML = e.res, r.appendChild(c); let p = document.createElement("div"); p.classList.add("col-md-4"), p.classList.add("res_item"); let m = document.createElement("p"); m.innerHTML = e.mime_type, p.appendChild(m), a.appendChild(s), a.appendChild(r), a.appendChild(p), d.appendChild(a), n.appendChild(d); let y = document.createElement("div"); y.classList.add("col-md-2"), y.classList.add("col-ms-12"), y.classList.add("res_download_btn_container"); let E = document.createElement("form"); E.action = "/downloadbyitag", E.method = "POST"; let g = document.createElement("input"); g.type = "hidden", g.name = "url", g.value = document.getElementById("yt_url").value; let u = document.createElement("input"); u.name = "itag", u.type = "hidden", u.value = e.itag, u.style.display = "none"; let h = document.createElement("input"); h.type = "submit", h.classList.add("btn"), h.classList.add("btn-info"), h.classList.add("res_download_btn"), h.value = "Download", E.appendChild(g), E.appendChild(u), E.appendChild(h), y.appendChild(E), n.appendChild(y), l.appendChild(n) }), document.getElementById("download_options").appendChild(l) } function downloadSelectedRes(e, t) { fetch("/downloadbyitag", { headers: { "Content-type": "application/json" }, method: "POST", body: JSON.stringify({ url: e, itag: t }) }).then(function (e) { document.getElementsByClassName("progress-bar")[0].style.width = "100%" }).catch(function (e) { console.log(e) }) }
+  </script>
+  <style>
+    #error_container p,
+    .first_row,
+    .platform_descr p,
+    .res_item,
+    .title_container,
+    .title_container h1 {
+      text-align: center
     }
-     #top_ad_1 iframe{
-	     margin: 3px;
-     }
-    </style>
-  </head>
-  <body>
- 
-   <div id="top_ad_1" >
-	   <script type="text/javascript">
-	atOptions = {
-		'key' : 'b0f2b8797112da4d3a1a2642e94436f2',
-		'format' : 'iframe',
-		'height' : 90,
-		'width' : 728,
-		'params' : {}
-	};
-	document.write('<scr' + 'ipt type="text/javascript" src="//www.topcreativeformat.com/b0f2b8797112da4d3a1a2642e94436f2/invoke.js"></scr' + 'ipt>');
-</script>   
-   </div>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-      <div class="container-fluid">
-        <a title="HSYouTube" class="navbar-brand" href="#">
-        <img src="{{url_for('static', filename='images/logo.png')}}" alt="HSYouTube - Download unlimited YouTube Videos"  /> HSYouTube</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a title="Home" class="nav-link active" aria-current="page" href="/">Home</a>
-            </li>
-            <li class="nav-item">
-              <a title="YouTube Video To MP3" class="nav-link" href="#">YouTubeVideo2Mp3</a>
-            </li>
-            <li class="nav-item">
-              <a title="Instagram Reel Downloader" class="nav-link" href="/reelsdownloader">InstagramReelDownloader</a>
-            </li>
-            <li class="nav-item">
-                <a title="Terms and conditions" class="nav-link" href="/policy.html">Terms & Conditions</a>
-              </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
 
-    <main>
-      <section id="top_banner">
+    .article_1,
+    .res_item p,
+    main {
+      margin-bottom: 0 !important
+    }
+
+    .download_msg,
+    .res_download_btn {
+      font-size: 15px
+    }
+
+    * {
+      margin: 0;
+      padding: 0
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: 9vh
+    }
+
+    .navbar {
+      background-color: #7752fe !important
+    }
+
+    .nav-item a {
+      color: #ffff !important
+    }
+
+    .navbar-brand {
+      font-weight: 700 !important;
+      color: #fff !important
+    }
+
+    .navbar-brand img {
+      width: 40px;
+      height: auto
+    }
+
+    #top_banner {
+      width: 100%;
+      min-height: 70vh;
+      background-color: #190482;
+      display: flex;
+      gap: 20px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 55px 15px #190482;
+      padding: 8px
+    }
+
+    .form_container,
+    .title_container {
+      justify-content: center;
+      display: flex;
+      width: 100%
+    }
+
+    .title_container {
+      align-items: center
+    }
+
+    #loader_container p,
+    .article_1 p,
+    .main_title,
+    footer .footer_links_container p {
+      color: #fff
+    }
+
+    form {
+      width: 80%;
+      display: flex;
+      justify-content: center;
+      gap: 35px
+    }
+
+    form .row,
+    form .row .button_container input {
+      width: 100%
+    }
+
+    form .row .input_container {
+      margin-bottom: 10px
+    }
+
+    form .row .input_container .url_input {
+      border: none;
+      height: 35px;
+      border-radius: 4px;
+      width: 100%
+    }
+
+    .url_input::placeholder {
+      text-align: center;
+      color: #190482
+    }
+
+    .title_container h2 {
+      text-align: center;
+      color: #7752fe
+    }
+
+    .icon_container h3,
+    .yt_video_guide h2,
+    p {
+      color: #36754e
+    }
+
+    #download_options {
+      margin-top: 20px;
+      display: none
+    }
+
+    #resolutions_box {
+      width: 100%;
+      display: flex;
+      flex-direction: column
+    }
+
+    .res_item {
+      display: flex;
+      justify-content: center;
+      align-items: center !important
+    }
+
+    .video_reso_item {
+      background-color: #fff;
+      align-items: center;
+      font-weight: 500;
+      border-bottom: .2px solid gray;
+      padding: 5px
+    }
+
+    .first_row,
+    .list_title {
+      font-weight: 700
+    }
+
+    .reso_row {
+      display: flex;
+      align-items: center
+    }
+
+    .first_row {
+      display: flex;
+      justify-content: center;
+      align-items: center !important;
+      background-color: #fff;
+      border-top-right-radius: 8px;
+      border-top-left-radius: 8px
+    }
+
+    #policy_top,
+    .article_1 {
+      background-color: #190482
+    }
+
+    .res_download_btn_container {
+      display: flex;
+      justify-content: center !important
+    }
+
+    .youtubeImg {
+      width: 25px;
+      height: auto;
+      margin-right: 5px
+    }
+
+    #loader_container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px
+    }
+
+    #error_container,
+    #ytFrame {
+      display: none
+    }
+
+    #error_container p {
+      color: red;
+      font-size: 19px
+    }
+
+    p {
+      font-size: larger;
+      font-weight: 500
+    }
+
+    .os_icon {
+      width: 80px;
+      height: 80px
+    }
+
+    .section_second {
+      max-width: 100%
+    }
+
+    .section_second .center_col,
+    .yt_video_guide {
+      display: flex;
+      flex-direction: column;
+      align-items: center
+    }
+
+    .center_col {
+      display: flex;
+      flex-direction: column;
+      gap: 7vh
+    }
+
+    #top_ad_1,
+    .platform_descr {
+      display: flex;
+      justify-content: center
+    }
+
+    .icon_container,
+    .img_steps div {
+      flex-direction: column;
+      display: flex
+    }
+
+    .icon_container {
+      align-items: center;
+      width: 100%
+    }
+
+    .icon_container h3 {
+      font-size: 38px
+    }
+
+    .icon_container .icons {
+      width: 100%;
+      justify-content: center !important
+    }
+
+    .icon_container .icons .icon_box {
+      display: flex;
+      justify-content: center !important;
+      gap: 25px;
+      margin: 20px 0
+    }
+
+    .row {
+      margin-right: 0 !important
+    }
+
+    .feature_list_container {
+      display: flex;
+      width: 100%;
+      justify-content: left
+    }
+
+    .feature_list_container ol {
+      font-size: 22px;
+      text-align: justify;
+      color: #36754e;
+      font-weight: 450
+    }
+
+    .img_steps {
+      width: 100%;
+      justify-content: space-around !important
+    }
+
+    .img_steps div {
+      align-items: center;
+      margin: 30px 0;
+      gap: 5px
+    }
+
+    .img_steps div p {
+      color: gray;
+      text-align: left;
+      font-size: 11px;
+      width: 220px
+    }
+
+    .article_1 {
+      color: #fff
+    }
+
+    footer {
+      background-color: #000;
+      min-height: 40vh;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0;
+      gap: 30px
+    }
+
+    footer .footer_links_container {
+      justify-content: space-around !important
+    }
+
+    .progress {
+      min-width: 300px;
+      display: none
+    }
+
+    .download_msg {
+      background-color: #4d8b4d;
+      padding-top: 10px;
+      height: 11vh;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      justify-content: center
+    }
+
+    .download_msg p {
+      width: 80%;
+      text-align: center;
+      color: #fff;
+      margin-bottom: none
+    }
+
+    .close-ico-btn {
+      position: relative;
+      float: right;
+      top: -10%;
+      cursor: pointer
+    }
+
+    #policy_top {
+      height: 20vh;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end
+    }
+
+    .policy_list ol {
+      font-size: 20px
+    }
+
+    .policy_list ol li {
+      font-weight: 700;
+      margin: 6px 0
+    }
+
+    .policy_list ul {
+      font-size: 18px
+    }
+
+    .policy_list ul li {
+      font-weight: 400
+    }
+
+    .policy_content {
+      margin-bottom: 10vh;
+      padding: 4vw;
+      text-align: left
+    }
+
+    #top_ad_1 iframe {
+      margin: 3px
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a title="HSYouTube" class="navbar-brand" href="#">
+        <img src="{{url_for('static', filename='images/logo.png')}}"
+          alt="HSYouTube - Download unlimited YouTube Videos" /> HSYouTube</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a title="Home" class="nav-link active" aria-current="page" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a title="YouTube Video To MP3" class="nav-link" href="#">YouTubeVideo2Mp3</a>
+          </li>
+          <li class="nav-item">
+            <a title="Instagram Reel Downloader" class="nav-link" href="/reelsdownloader">InstagramReelDownloader</a>
+          </li>
+          <li class="nav-item">
+            <a title="Terms and conditions" class="nav-link" href="/policy.html">Terms & Conditions</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <main>
+    <section id="top_banner">
+      <div class="title_container">
+        <h1 class="main_title">YouTube Video Downloader</h1>
+      </div>
+      <div class="form_container">
+        <form id="searchForm" method="POST" action="/">
+          <div class="row">
+            <div class="col-md-10 col-sm-12 input_container">
+              <input class="url_input" id="yt_url" onkeyup="getResols()" onfocus="getResols()" onkeydown="getResols()"
+                onchange="getResols()" oninput="getResols()" type="text" placeholder="Paster Youtube Video URL"
+                name="video_url" />
+            </div>
+            <div class="col-md-2 col-sm-12 button_container">
+              <input id="form_download_btn" class="btn btn-info" type="submit" value="Download HD" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+
+
+
+      <div id="error_container">
+        <p>Can't find this video, please try with another url!</p>
+      </div>
+      <div id="loader_container">
+        <span>
+          <img src="{{url_for('static', filename='images/loader.svg')}} " alt="Downloading a YouTube Video!" />
+        </span>
+        <p>Searching best resolutions for you!</p>
+      </div>
+      <div id="youtube_iframe_container">
+        <iframe id="ytFrame" width="200" height="130" src="" title="YouTube video player" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen></iframe>
+      </div>
+      <div id="download_options">
         <div class="title_container">
-          <h1 class="main_title">YouTube Video Downloader</h1>
+          <h2>Download this YouTube Video in multiple resolutions.</h2>
         </div>
-        <div class="form_container">
-          <form id="searchForm" method="POST" action="/">
+        <div class="row first_row">
+          <div class="col-md-10">
             <div class="row">
-              <div class="col-md-10 col-sm-12 input_container">
-                <input
-                  class="url_input"
-                  id="yt_url"
-                  onkeyup="getResols()"
-                  onfocus="getResols()"
-                  onkeydown="getResols()"
-                  onchange="getResols()"
-                  oninput="getResols()"
-                  type="text"
-                  placeholder="Paster Youtube Video URL"
-                  name="video_url"
-                />
+              <div class="col-md-4">
+                <p>Video Title</p>
               </div>
-              <div class="col-md-2 col-sm-12 button_container">
-                <input
-                  id="form_download_btn"
-                  class="btn btn-info"
-                  type="submit"
-                  value="Download HD"
-                />
+              <div class="col-md-4">
+                <p>Video Resolution</p>
               </div>
-            </div>
-          </form>
-        </div>
-
-
-    
-        
-        <div id="error_container">
-          <p>Can't find this video, please try with another url!</p>
-        </div>
-        <div id="loader_container">
-          <span>
-            <img src="{{url_for('static', filename='images/loader.svg')}} " alt="Downloading a YouTube Video!" />
-          </span>
-          <p>Searching best resolutions for you!</p>
-        </div>
-        <div id="youtube_iframe_container">
-          <iframe
-            id="ytFrame"
-            width="200"
-            height="130"
-            src=""
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div id="download_options">
-          <div class="title_container">
-            <h2>Download this YouTube Video in multiple resolutions.</h2>
-          </div>
-          <div class="row first_row">
-            <div class="col-md-10">
-              <div class="row">
-                <div class="col-md-4">
-                  <p>Video Title</p>
-                </div>
-                <div class="col-md-4">
-                  <p>Video Resolution</p>
-                </div>
-                <div class="col-md-4">
-                  <p>Format</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-2 col-ms-12">
-              <p>Action</p>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="row section_second">
-        <div class="col-md-2 left_col"></div>
-        <div class="col-md-8 center_col">
-          <div class="platform_descr">
-            <p>
-              Discover a myriad of video downloading possibilities through
-              HSYouTube, the ultimate solution for overcoming YouTube's download
-              limitations. Whether there's a lack of native download features,
-              fear not – our fast, secure, and user-friendly service is
-              tailor-made to cater to your requirements!
-            </p>
-          </div>
-
-          <div class="icon_container">
-            <h3>Supported Platforms</h3>
-            <div class="row icons">
-              <div class="col-md-3 col-ms-12 icon_box">
-                <img
-                  class="os_icon"
-                  alt="Download High Quality YouTube videos on Windows!"
-                  src="{{url_for('static', filename='images/window.png')}}"
-                />
-              </div>
-              <div class="col-md-3 col-ms-12 icon_box">
-                <img
-                  class="os_icon"
-                  alt="Download High Quality YouTube videos on MAC!"
-                  src="{{url_for('static', filename='images/apple.png')}}"
-                />
-              </div>
-              <div class="col-md-3 col-ms-12 icon_box">
-                <img
-                  class="os_icon"
-                  alt="Download High Quality YouTube videos on Android!"
-                  src="{{url_for('static', filename='images/android.png')}}"
-                />
-              </div>
-              <div class="col-md-3 col-ms-12 icon_box">
-                <img
-                  class="os_icon"
-                  alt="Download High Quality YouTube videos on Linux!"
-                  src="{{url_for('static', filename='images/linux.png')}}"
-                />
+              <div class="col-md-4">
+                <p>Format</p>
               </div>
             </div>
           </div>
-
-          <div class="feature_list_container">
-            <ol>
-              <li>Unlimited Video Downloading with HSYouTube.</li>
-              <li>
-                We provide you an option to download video in your preferred
-                resolution.
-              </li>
-              <li>We guarranty a high prmium quality video and aurdio.</li>
-              <li>We provide multiple formats like 3gp, MP4, webm, etc...</li>
-              <li>Easy steps for downloading video.</li>
-              <li>Tutorial steps for downloaing video in description.</li>
-            </ol>
-          </div>
-
-          <div class="yt_video_guide">
-            <div class="guide_title">
-              <h2>
-                Complete Guide: How to Download Videos from YouTube Online
-              </h2>
-            </div>
-            <div class="row img_steps">
-              <div class="col-md-4 col-ms-12">
-                <img
-                  alt="Copy the video url from YouTube and pase in in the
-                SamrtYouTubeSaver."
-                  src="{{url_for('static', filename='images/howto2.png')}}"
-                />
-                <p>
-                  Copy the video url from YouTube and pase in in the
-                  SamrtYouTubeSaver.
-                </p>
-              </div>
-              <div class="col-md-4 col-ms-12">
-                <img
-                  alt="After pasting the YouTube Video URL in SmartVideoSaver, wait
-                till all the reolutions gets loaded."
-                  src="{{url_for('static', filename='images/howto3.png')}}"
-                />
-                <p>
-                  After pasting the YouTube Video URL in SmartVideoSaver, wait
-                  till all the reolutions gets loaded.
-                </p>
-              </div>
-              <div class="col-md-4 col-ms-12">
-                <img
-                  alt="Click on the Download button to download your YouTube video
-                from HSYouTube."
-                  src="{{url_for('static', filename='images/howto4.png')}}"
-                />
-                <p>
-                  Click on the Download button to download your YouTube video
-                  from HSYouTube.
-                </p>
-              </div>
-            </div>
+          <div class="col-md-2 col-ms-12">
+            <p>Action</p>
           </div>
         </div>
-        <div class="col-md-2 right_col"></div>
-      </section>
-      <section class="row article_1">
-        <div class="col-md-2 left_col"></div>
-        <div class="col-md-8 center_col">
-          <div class="article_title">
-            <h2>How to download Any Video On Internet?</h2>
-          </div>
-          <div class="article_content">
-            <p>
-              If you're trying to download videos for which you have the right
-              permissions or that are provided for download by the content
-              creator, and you're using a tool like Internet Download Manager
-              (IDM), here's a general guide:
-            </p>
-
-            <ol>
-              <li>
-                <span class="list_title">Install IDM:</span> Make sure you have
-                IDM installed on your computer. You can download it from the
-                official website.
-              </li>
-              <li>
-                <span class="list_title">Enable Browser Extension:</span>IDM
-                usually integrates with web browsers like Chrome, Firefox, or
-                others. Ensure that the IDM extension is enabled in your
-                browser.
-              </li>
-              <li>
-                <span class="list_title">Visit the Video Page: </span>Open the
-                webpage where the video is located.
-              </li>
-              <li>
-                <span class="list_title">IDM Download Panel: </span>Once the IDM
-                extension is active, you should see a download button or panel
-                overlaid on the video. It may appear as a small icon on the
-                video or in the form of a download button.
-              </li>
-              <li>
-                <span class="list_title">Start Download: </span>Click on the
-                download button or panel. IDM will intercept the video link and
-                start the download process.
-              </li>
-              <li>
-                <span class="list_title">Choose Download Settings: </span>IDM
-                usually provides options to choose the video quality and
-                download settings. Select your preferred options.
-              </li>
-              <li>
-                <span class="list_title">Download Progress: </span>Monitor the
-                download progress in the IDM interface. Once the download is
-                complete, the video should be available on your computer.
-              </li>
-            </ol>
-          </div>
-        </div>
-        <div class="col-md-2 right_col"></div>
-      </section>
-    </main>
-    <footer>
-      <div class="copyright">
-        &#169; YouTube Downloader, made with
-        <span style="color: red">&#9829;</span> by HSYouTube.
       </div>
-      <div class="row footer_links_container">
-        <div class="col-md-3">
-          <a title="YouTube Video Downloader" href="#" ><p>YouTube Downloader</p></a>
-          <a title="Download YouTUbe to mp3" href="#" ><p>Donwload YouTube to mp3</p></a>
-          <a title="Download YouTube Shots" href="#" ><p>YouTube Shorts</p></a>
+    </section>
+    <section class="row section_second">
+      <div class="col-md-2 left_col"></div>
+      <div class="col-md-8 center_col">
+        <div class="platform_descr">
+          <p>
+            Discover a myriad of video downloading possibilities through
+            HSYouTube, the ultimate solution for overcoming YouTube's download
+            limitations. Whether there's a lack of native download features,
+            fear not – our fast, secure, and user-friendly service is
+            tailor-made to cater to your requirements!
+          </p>
         </div>
-        <div class="col-md-3">
-          <a title="Download YouTbe Video" href="#" ><p>TikTok Downloader</p></a>
-          <a title="Youtube Video Downloader" href="#" ><p>Instagram Video Downloader</p></a>
-          <a title="Facebook Video Downloader" href="#" ><p>Facebook Video Downloader</p></a>
-          <a title="Twitter Video Downloader" href="#" > <p>Twitter Video Downloader</p></a>
-        </div>
-        <div class="col-md-3">
-          <a title="About Us" href="#" ><p>About Us</p></a>
-          <a title="Privacey Policy" href="#" ><p>Privace Policy</p></a>
-          <a title="Terms of Service" href="#" ><p>Terms of Service</p></a>
-          <a title="Contact" href="#" ><p>Contact</p></a>
-          <a title="API" href="#" ><p>API</p></a>
-        </div>
-        <div class="col-md-3"></div>
-      </div>
-    </footer>
 
-  </body>
+        <div class="icon_container">
+          <h3>Supported Platforms</h3>
+          <div class="row icons">
+            <div class="col-md-3 col-ms-12 icon_box">
+              <img class="os_icon" alt="Download High Quality YouTube videos on Windows!"
+                src="{{url_for('static', filename='images/window.png')}}" />
+            </div>
+            <div class="col-md-3 col-ms-12 icon_box">
+              <img class="os_icon" alt="Download High Quality YouTube videos on MAC!"
+                src="{{url_for('static', filename='images/apple.png')}}" />
+            </div>
+            <div class="col-md-3 col-ms-12 icon_box">
+              <img class="os_icon" alt="Download High Quality YouTube videos on Android!"
+                src="{{url_for('static', filename='images/android.png')}}" />
+            </div>
+            <div class="col-md-3 col-ms-12 icon_box">
+              <img class="os_icon" alt="Download High Quality YouTube videos on Linux!"
+                src="{{url_for('static', filename='images/linux.png')}}" />
+            </div>
+          </div>
+        </div>
+
+        <div class="feature_list_container">
+          <ol>
+            <li>Unlimited Video Downloading with HSYouTube.</li>
+            <li>
+              We provide you an option to download video in your preferred
+              resolution.
+            </li>
+            <li>We guarranty a high prmium quality video and aurdio.</li>
+            <li>We provide multiple formats like 3gp, MP4, webm, etc...</li>
+            <li>Easy steps for downloading video.</li>
+            <li>Tutorial steps for downloaing video in description.</li>
+          </ol>
+        </div>
+
+        <div class="yt_video_guide">
+          <div class="guide_title">
+            <h2>
+              Complete Guide: How to Download Videos from YouTube Online
+            </h2>
+          </div>
+          <div class="row img_steps">
+            <div class="col-md-4 col-ms-12">
+              <img alt="Copy the video url from YouTube and pase in in the
+                SamrtYouTubeSaver." src="{{url_for('static', filename='images/howto2.png')}}" />
+              <p>
+                Copy the video url from YouTube and pase in in the
+                SamrtYouTubeSaver.
+              </p>
+            </div>
+            <div class="col-md-4 col-ms-12">
+              <img alt="After pasting the YouTube Video URL in SmartVideoSaver, wait
+                till all the reolutions gets loaded." src="{{url_for('static', filename='images/howto3.png')}}" />
+              <p>
+                After pasting the YouTube Video URL in SmartVideoSaver, wait
+                till all the reolutions gets loaded.
+              </p>
+            </div>
+            <div class="col-md-4 col-ms-12">
+              <img alt="Click on the Download button to download your YouTube video
+                from HSYouTube." src="{{url_for('static', filename='images/howto4.png')}}" />
+              <p>
+                Click on the Download button to download your YouTube video
+                from HSYouTube.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2 right_col"></div>
+    </section>
+    <section class="row article_1">
+      <div class="col-md-2 left_col"></div>
+      <div class="col-md-8 center_col">
+        <div class="article_title">
+          <h2>How to download Any Video On Internet?</h2>
+        </div>
+        <div class="article_content">
+          <p>
+            If you're trying to download videos for which you have the right
+            permissions or that are provided for download by the content
+            creator, and you're using a tool like Internet Download Manager
+            (IDM), here's a general guide:
+          </p>
+
+          <ol>
+            <li>
+              <span class="list_title">Install IDM:</span> Make sure you have
+              IDM installed on your computer. You can download it from the
+              official website.
+            </li>
+            <li>
+              <span class="list_title">Enable Browser Extension:</span>IDM
+              usually integrates with web browsers like Chrome, Firefox, or
+              others. Ensure that the IDM extension is enabled in your
+              browser.
+            </li>
+            <li>
+              <span class="list_title">Visit the Video Page: </span>Open the
+              webpage where the video is located.
+            </li>
+            <li>
+              <span class="list_title">IDM Download Panel: </span>Once the IDM
+              extension is active, you should see a download button or panel
+              overlaid on the video. It may appear as a small icon on the
+              video or in the form of a download button.
+            </li>
+            <li>
+              <span class="list_title">Start Download: </span>Click on the
+              download button or panel. IDM will intercept the video link and
+              start the download process.
+            </li>
+            <li>
+              <span class="list_title">Choose Download Settings: </span>IDM
+              usually provides options to choose the video quality and
+              download settings. Select your preferred options.
+            </li>
+            <li>
+              <span class="list_title">Download Progress: </span>Monitor the
+              download progress in the IDM interface. Once the download is
+              complete, the video should be available on your computer.
+            </li>
+          </ol>
+        </div>
+      </div>
+      <div class="col-md-2 right_col"></div>
+    </section>
+  </main>
+  <footer>
+    <div class="copyright">
+      &#169; YouTube Downloader, made with
+      <span style="color: red">&#9829;</span> by HSYouTube.
+    </div>
+    <div class="row footer_links_container">
+      <div class="col-md-3">
+        <a title="YouTube Video Downloader" href="#">
+          <p>YouTube Downloader</p>
+        </a>
+        <a title="Download YouTUbe to mp3" href="#">
+          <p>Donwload YouTube to mp3</p>
+        </a>
+        <a title="Download YouTube Shots" href="#">
+          <p>YouTube Shorts</p>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a title="Download YouTbe Video" href="#">
+          <p>TikTok Downloader</p>
+        </a>
+        <a title="Youtube Video Downloader" href="#">
+          <p>Instagram Video Downloader</p>
+        </a>
+        <a title="Facebook Video Downloader" href="#">
+          <p>Facebook Video Downloader</p>
+        </a>
+        <a title="Twitter Video Downloader" href="#">
+          <p>Twitter Video Downloader</p>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a title="About Us" href="#">
+          <p>About Us</p>
+        </a>
+        <a title="Privacey Policy" href="#">
+          <p>Privace Policy</p>
+        </a>
+        <a title="Terms of Service" href="#">
+          <p>Terms of Service</p>
+        </a>
+        <a title="Contact" href="#">
+          <p>Contact</p>
+        </a>
+        <a title="API" href="#">
+          <p>API</p>
+        </a>
+      </div>
+      <div class="col-md-3"></div>
+    </div>
+  </footer>
+
+</body>
+
 </html>
