@@ -28,9 +28,11 @@ def home():
 		except Exception as e:
 			print("Error in rendering template", e)
 	elif(request.method == "POST"):
-		video_url=request.form['video_url']
-		print("VIDEO URL", video_url)
-		return DownloadYTVideo(video_url)
+		try:
+			video_url=request.form['video_url']
+			return DownloadYTVideo(video_url)
+		except Exception as e:
+			print(e)
 
  
 @app.route('/get_resolutions', methods=['POST'])
